@@ -1,0 +1,385 @@
+<!--
+  written by topkek
+ -->
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+..\FrameXML\UI.xsd">
+  <Script file="RaidInvites.lua"/>
+  <Frame name="invitesFrame" parent="UIParent" toplevel="true" enableMouse="true" movable="true" alpha="1.00" hidden="false" inherits="BackdropTemplate">
+    <Scripts>
+      <OnLoad>
+        self:RegisterForDrag("LeftButton")
+        self:RegisterEvent("PLAYER_STARTED_MOVING")
+        self:RegisterEvent("PLAYER_STOPPED_MOVING")
+        self:RegisterEvent("CURSOR_UPDATE")
+        self:RegisterEvent("PLAYER_LOGIN")
+        self:RegisterEvent("CHAT_MSG_SYSTEM")
+        self:RegisterEvent("CHAT_MSG_CHANNEL")
+        self:RegisterEvent("CHAT_MSG_SAY")
+        self:RegisterEvent("CHAT_MSG_YELL")
+        self:RegisterEvent("CHAT_MSG_WHISPER")
+        self:RegisterEvent("CHAT_MSG_GUILD")
+        self:RegisterEvent("GROUP_ROSTER_UPDATE")
+        loadRoot(self);
+      </OnLoad>
+      <OnDragStart>
+        self:StartMoving()
+      </OnDragStart>
+      <OnDragStop>
+        self:StopMovingOrSizing()
+      </OnDragStop>
+      <OnKeyDown>
+        handleKey(key);
+      </OnKeyDown>
+      <OnEvent function="handleEvent"/>
+      <OnMouseDown>
+        handleKey("ESCAPE")
+      </OnMouseDown>
+    </Scripts>
+    <Size>
+      <AbsDimension x="180" y="325" />
+    </Size>
+    <Anchors>
+      <Anchor point="CENTER" relativeTo="UIParent"/>
+    </Anchors>
+    <Layers>
+      <Layer>
+        <FontString inherits="GameFontNormal" text="Spam Interval">
+          <Anchors>
+            <Anchor point="BOTTOMLEFT" relativeTo="$parent" x="30" y="290"/>
+          </Anchors>
+        </FontString>
+        <FontString inherits="GameFontNormal" text="Spam Message">
+          <Anchors>
+            <Anchor point="BOTTOMLEFT" relativeTo="$parent" x="30" y="250"/>
+          </Anchors>
+        </FontString>
+        <FontString inherits="GameFontNormal" text="Invite Channels">
+          <Anchors>
+            <Anchor point="BOTTOMLEFT" relativeTo="$parent" x="30" y="210"/>
+          </Anchors>
+        </FontString>
+        <FontString inherits="GameFontNormal" text="Invite Keyword">
+          <Anchors>
+            <Anchor point="BOTTOMLEFT" relativeTo="$parent" x="30" y="170"/>
+          </Anchors>
+        </FontString>
+        <FontString inherits="GameFontNormal" text="Raid Size">
+          <Anchors>
+            <Anchor point="BOTTOMLEFT" relativeTo="$parent" x="30" y="130"/>
+          </Anchors>
+        </FontString>
+      </Layer>
+    </Layers>
+    <Frames>
+      <Button inherits="OptionsButtonTemplate">
+        <Size x="24" y="24"/>
+        <Anchors>
+          <Anchor point="TOPRIGHT">
+            <Offset x="-8" y="-8"/>
+          </Anchor>
+        </Anchors>
+        <Scripts>
+          <OnClick>
+            toggle()
+          </OnClick>
+        </Scripts>
+        <Layers>
+          <Layer level="OVERLAY">
+            <FontString inherits="GameFontNormalLarge" text="-"/>
+          </Layer>
+        </Layers>
+      </Button>
+      <EditBox name="$parentEditBox" letters="80" autoFocus="false">
+        <Size x="100" y="32" />
+        <Anchors>
+          <Anchor point="BOTTOMLEFT">
+            <Offset x="30" y="260" />
+          </Anchor>
+        </Anchors>
+        <Layers>
+          <Layer level="BACKGROUND">
+            <Texture file="Interface\ChatFrame\UI-ChatInputBorder-Left">
+              <Size x="60" y="32" />
+              <Anchors>
+                <Anchor point="LEFT">
+                  <Offset x="-10" y="0" />
+                </Anchor>
+              </Anchors>
+              <TexCoords left="0" right="0.2" top="0" bottom="1.0"/>
+            </Texture>
+            <Texture file="Interface\ChatFrame\UI-ChatInputBorder-Right">
+              <Size x="60" y="32" />
+              <Anchors>
+                  <Anchor point="RIGHT">
+                      <Offset x="10" y="0" />
+                  </Anchor>
+              </Anchors>
+              <TexCoords left="0.7" right="1.0" top="0" bottom="1.0"/>
+            </Texture>
+          </Layer>
+        </Layers>
+        <Scripts>
+          <OnLoad>
+            initSpamIntervalEditbox(self)
+          </OnLoad>
+          <OnMouseDown>
+            focusEditbox()
+          </OnMouseDown>
+          <OnKeyDown>
+            handleKey(key)
+          </OnKeyDown>
+          <OnEnterPressed>
+            handleKey("ESCAPE")
+          </OnEnterPressed>
+          <OnTextChanged>
+            editboxChanged()
+          </OnTextChanged>
+        </Scripts>
+        <FontString inherits="ChatFontNormal" />
+      </EditBox>
+      <EditBox name="$parentEditBox" letters="80" autoFocus="false">
+        <Size x="100" y="32" />
+        <Anchors>
+          <Anchor point="BOTTOMLEFT">
+            <Offset x="30" y="220" />
+          </Anchor>
+        </Anchors>
+        <Layers>
+          <Layer level="BACKGROUND">
+            <Texture file="Interface\ChatFrame\UI-ChatInputBorder-Left">
+              <Size x="60" y="32" />
+              <Anchors>
+                <Anchor point="LEFT">
+                  <Offset x="-10" y="0" />
+                </Anchor>
+              </Anchors>
+              <TexCoords left="0" right="0.2" top="0" bottom="1.0"/>
+            </Texture>
+            <Texture file="Interface\ChatFrame\UI-ChatInputBorder-Right">
+              <Size x="60" y="32" />
+              <Anchors>
+                  <Anchor point="RIGHT">
+                      <Offset x="10" y="0" />
+                  </Anchor>
+              </Anchors>
+              <TexCoords left="0.7" right="1.0" top="0" bottom="1.0"/>
+            </Texture>
+          </Layer>
+        </Layers>
+        <Scripts>
+          <OnLoad>
+            initSpamMessageEditbox(self)
+          </OnLoad>
+          <OnMouseDown>
+            focusEditbox()
+          </OnMouseDown>
+          <OnKeyDown>
+            handleKey(key)
+          </OnKeyDown>
+          <OnEnterPressed>
+            handleKey("ESCAPE")
+          </OnEnterPressed>
+          <OnTextChanged>
+            editboxChanged()
+          </OnTextChanged>
+        </Scripts>
+        <FontString inherits="ChatFontNormal" />
+      </EditBox>
+      <EditBox name="$parentEditBox" letters="80" autoFocus="false">
+        <Size x="100" y="32" />
+        <Anchors>
+          <Anchor point="BOTTOMLEFT">
+            <Offset x="30" y="180" />
+          </Anchor>
+        </Anchors>
+        <Layers>
+          <Layer level="BACKGROUND">
+            <Texture file="Interface\ChatFrame\UI-ChatInputBorder-Left">
+              <Size x="60" y="32" />
+              <Anchors>
+                <Anchor point="LEFT">
+                  <Offset x="-10" y="0" />
+                </Anchor>
+              </Anchors>
+              <TexCoords left="0" right="0.2" top="0" bottom="1.0"/>
+            </Texture>
+            <Texture file="Interface\ChatFrame\UI-ChatInputBorder-Right">
+              <Size x="60" y="32" />
+              <Anchors>
+                  <Anchor point="RIGHT">
+                      <Offset x="10" y="0" />
+                  </Anchor>
+              </Anchors>
+              <TexCoords left="0.7" right="1.0" top="0" bottom="1.0"/>
+            </Texture>
+          </Layer>
+        </Layers>
+        <Scripts>
+          <OnLoad>
+            initInviteChannelsEditbox(self)
+          </OnLoad>
+          <OnMouseDown>
+            focusEditbox()
+          </OnMouseDown>
+          <OnKeyDown>
+            handleKey(key)
+          </OnKeyDown>
+          <OnEnterPressed>
+            handleKey("ESCAPE")
+          </OnEnterPressed>
+          <OnTextChanged>
+            editboxChanged()
+          </OnTextChanged>
+        </Scripts>
+        <FontString inherits="ChatFontNormal" />
+      </EditBox>
+      <EditBox name="$parentEditBox" letters="80" autoFocus="false">
+        <Size x="100" y="32" />
+        <Anchors>
+          <Anchor point="BOTTOMLEFT">
+            <Offset x="30" y="140" />
+          </Anchor>
+        </Anchors>
+        <Layers>
+          <Layer level="BACKGROUND">
+            <Texture file="Interface\ChatFrame\UI-ChatInputBorder-Left">
+              <Size x="60" y="32" />
+              <Anchors>
+                <Anchor point="LEFT">
+                  <Offset x="-10" y="0" />
+                </Anchor>
+              </Anchors>
+              <TexCoords left="0" right="0.2" top="0" bottom="1.0"/>
+            </Texture>
+            <Texture file="Interface\ChatFrame\UI-ChatInputBorder-Right">
+              <Size x="60" y="32" />
+              <Anchors>
+                  <Anchor point="RIGHT">
+                      <Offset x="10" y="0" />
+                  </Anchor>
+              </Anchors>
+              <TexCoords left="0.7" right="1.0" top="0" bottom="1.0"/>
+            </Texture>
+          </Layer>
+        </Layers>
+        <Scripts>
+          <OnLoad>
+            initInviteKeywordEditbox(self)
+          </OnLoad>
+          <OnMouseDown>
+            focusEditbox()
+          </OnMouseDown>
+          <OnKeyDown>
+            handleKey(key)
+          </OnKeyDown>
+          <OnEnterPressed>
+            handleKey("ESCAPE")
+          </OnEnterPressed>
+          <OnTextChanged>
+            editboxChanged()
+          </OnTextChanged>
+        </Scripts>
+        <FontString inherits="ChatFontNormal" />
+      </EditBox>
+      <EditBox name="$parentEditBox" letters="80" autoFocus="false">
+        <Size x="100" y="32" />
+        <Anchors>
+          <Anchor point="BOTTOMLEFT">
+            <Offset x="30" y="100" />
+          </Anchor>
+        </Anchors>
+        <Layers>
+          <Layer level="BACKGROUND">
+            <Texture file="Interface\ChatFrame\UI-ChatInputBorder-Left">
+              <Size x="60" y="32" />
+              <Anchors>
+                <Anchor point="LEFT">
+                  <Offset x="-10" y="0" />
+                </Anchor>
+              </Anchors>
+              <TexCoords left="0" right="0.2" top="0" bottom="1.0"/>
+            </Texture>
+            <Texture file="Interface\ChatFrame\UI-ChatInputBorder-Right">
+              <Size x="60" y="32" />
+              <Anchors>
+                  <Anchor point="RIGHT">
+                      <Offset x="10" y="0" />
+                  </Anchor>
+              </Anchors>
+              <TexCoords left="0.7" right="1.0" top="0" bottom="1.0"/>
+            </Texture>
+          </Layer>
+        </Layers>
+        <Scripts>
+          <OnLoad>
+            initRaidSizeEditbox(self)
+          </OnLoad>
+          <OnMouseDown>
+            focusEditbox()
+          </OnMouseDown>
+          <OnKeyDown>
+            handleKey(key)
+          </OnKeyDown>
+          <OnEnterPressed>
+            handleKey("ESCAPE")
+          </OnEnterPressed>
+          <OnTextChanged>
+            editboxChanged()
+          </OnTextChanged>
+        </Scripts>
+        <FontString inherits="ChatFontNormal" />
+      </EditBox>
+      <CheckButton name="checkbox1" inherits="OptionsCheckButtonTemplate">
+        <Anchors>
+          <Anchor point="BOTTOMLEFT" relativeTo="$parent">
+            <Offset>
+              <AbsDimension x="20" y="75"/>
+            </Offset>
+          </Anchor>
+        </Anchors>
+        <Scripts>
+          <OnLoad>
+            initCaseSensitiveCheckbox(self)
+          </OnLoad>
+          <OnClick>
+            caseSensitiveChecked()
+          </OnClick>
+        </Scripts>
+      </CheckButton>
+      <CheckButton name="checkbox2" inherits="OptionsCheckButtonTemplate">
+        <Anchors>
+          <Anchor point="BOTTOMLEFT" relativeTo="$parent">
+            <Offset>
+              <AbsDimension x="20" y="50"/>
+            </Offset>
+          </Anchor>
+        </Anchors>
+        <Scripts>
+          <OnLoad>
+            initAssistCheckbox(self)
+          </OnLoad>
+          <OnClick>
+            assistChecked("click")
+          </OnClick>
+        </Scripts>
+      </CheckButton>
+      <CheckButton name="checkbox3" inherits="OptionsCheckButtonTemplate">
+        <Anchors>
+          <Anchor point="BOTTOMLEFT" relativeTo="$parent">
+            <Offset>
+              <AbsDimension x="20" y="25"/>
+            </Offset>
+          </Anchor>
+        </Anchors>
+        <Scripts>
+          <OnLoad>
+            initEnabledCheckbox(self)
+          </OnLoad>
+          <OnClick>
+            enabledChecked("click")
+          </OnClick>
+        </Scripts>
+      </CheckButton>
+    </Frames>
+  </Frame>
+</Ui>
