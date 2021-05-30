@@ -1,4 +1,5 @@
 # RaidInvites
+RaidInvites allows users to start automatic invites to people who message a keyword in specified chat channels.
 Default profile is called "raid".
 Profile names cannot be longer than ten characters.
 
