@@ -1,5 +1,6 @@
 ## Interface: 11304
 ## Title: RaidInvites
+## X-Curse-Project-ID: 487889
 ## SavedVariables: saved, profile, profiles
 
 #@no-lib-strip@
