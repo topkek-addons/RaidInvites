@@ -36,13 +36,20 @@
       </OnMouseDown>
     </Scripts>
     <Size>
-      <AbsDimension x="180" y="325" />
+      <AbsDimension x="225" y="375" />
     </Size>
     <Anchors>
       <Anchor point="CENTER" relativeTo="UIParent"/>
     </Anchors>
     <Layers>
       <Layer>
+        <FontString name="profileHeader" inherits="GameFontNormal" text="Profile: " font="Fonts\FRIZQT__.TTF">
+          <Color r="1" g="0.31" b="0" a="1"/>
+          <FontHeight val="20"/>
+          <Anchors>
+            <Anchor point="TOPLEFT" relativeTo="$parent" x="15" y="-45"/>
+          </Anchors>
+        </FontString>
         <FontString inherits="GameFontNormal" text="Spam Interval">
           <Anchors>
             <Anchor point="BOTTOMLEFT" relativeTo="$parent" x="30" y="290"/>
@@ -68,6 +75,11 @@
             <Anchor point="BOTTOMLEFT" relativeTo="$parent" x="30" y="130"/>
           </Anchors>
         </FontString>
+      </Layer>
+      <Layer>
+        <Texture>
+          <Color a="0.5" r="0" g="0" b="0" />
+        </Texture>
       </Layer>
     </Layers>
     <Frames>
@@ -359,7 +371,7 @@
             initAssistCheckbox(self)
           </OnLoad>
           <OnClick>
-            assistChecked("click")
+            assistChecked()
           </OnClick>
         </Scripts>
       </CheckButton>
@@ -376,7 +388,7 @@
             initEnabledCheckbox(self)
           </OnLoad>
           <OnClick>
-            enabledChecked("click")
+            enabledChecked()
           </OnClick>
         </Scripts>
       </CheckButton>

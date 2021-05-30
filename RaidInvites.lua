@@ -11,11 +11,37 @@ local default = {
   caseSensitive = false,
 }
 
+local worldBossDefault = {
+  spamInterval = "60",
+  spamMessage = "%boss has spawned! Send password for invite.",
+  inviteChannels = "guild, whisper",
+  inviteKeyword = "cupcakes",
+  raidSize = 40,
+  assist = true,
+  caseSensitive = true,
+}
+
+function deepcopy(orig)
+  local orig_type = type(orig)
+  local copy
+  if orig_type == 'table' then
+      copy = {}
+      for orig_key, orig_value in pairs(orig) do
+          copy[orig_key] = orig_value
+      end
+  else
+      copy = orig
+  end
+  return copy
+end
+
 local RaidInvites = LibStub("AceAddon-3.0"):NewAddon("RaidInvites", "AceEvent-3.0")
 saved = saved or default
+profile = profile or "raid"
+profiles = profiles or { ["raid"] = deepcopy(saved), ["worldboss"] = deepcopy(worldBossDefault) }
 local frame = CreateFrame("Frame")
 local hidden = true
-local enabled = false -- this setting should persist across sessions for world bosses
+local enabled = false
 local TimeSinceLastUpdate = 0
 local UpdateInterval = 1
 local InviteTimeout = 60
@@ -24,6 +50,7 @@ local TimeEnded = 0
 local Updates = 0
 local numInRaid = 1
 local assists = {}
+local bossName = "World boss"
 
 function initialize()
   spamIntervalEditbox:SetText(saved.spamInterval or "")
@@ -33,6 +60,7 @@ function initialize()
   raidSizeEditbox:SetText(saved.raidSize)
   caseSensitiveCheckbox:SetChecked(saved.caseSensitive)
   assistCheckBox:SetChecked(saved.assist)
+  profileHeader:SetText("Profile: " .. profile)
   if hidden then
     root:Hide()
   end
@@ -53,13 +81,24 @@ function loadRoot(this)
   })
 end
 
-
--- register comm event for unit_scan alert
--- create a raid invite blocker comm message and send back
--- if you have invites enabled for a world boss
-
-function worldBoss(message, payload)
-  print("world boss spawned")
+function worldBoss(message, boss)
+  profiles[profile] = deepcopy(saved)
+  saved = deepcopy(profiles["worldboss"])
+  profile = "worldboss"
+  bossName = boss
+  if hidden then
+    toggle()
+  end
+  enabled = true
+  spamIntervalEditbox:SetText(saved.spamInterval or "")
+  spamMessageEditbox:SetText(saved.spamMessage)
+  inviteChannelsEditbox:SetText(saved.inviteChannels)
+  inviteKeywordEditbox:SetText(saved.inviteKeyword)
+  raidSizeEditbox:SetText(saved.raidSize)
+  caseSensitiveCheckbox:SetChecked(saved.caseSensitive)
+  assistCheckBox:SetChecked(saved.assist)
+  profileHeader:SetText("Profile: " .. profile)
+  enabledCheckBox:SetChecked(enabled)
 end
 
 function updateAssists()
@@ -79,15 +118,19 @@ function announce()
   if numInRaid == 0 then
     numInRaid = 1
   end
+  local spam = saved.spamMessage .. " - (" .. numInRaid .. "/" .. saved.raidSize .. ") in group"
+  if profile == "worldboss" then
+    spam:gsub("%boss", bossName)
+  end
   if IsInGroup() then
     if saved.raidSize > 5 then
-      SendChatMessage(saved.spamMessage .. " - (" .. numInRaid .. "/" .. saved.raidSize .. ") in group", "RAID")
+      SendChatMessage(spam, "RAID")
     else
-      SendChatMessage(saved.spamMessage .. " - (" .. numInRaid .. "/" .. saved.raidSize .. ") in group", "PARTY")
+      SendChatMessage(spam, "PARTY")
     end
   end
   if IsInGuild() then
-    SendChatMessage(saved.spamMessage .. " - (" .. numInRaid .. "/" .. saved.raidSize ..") in group", "GUILD")
+    SendChatMessage(spam, "GUILD")
   end
 end
 
@@ -97,9 +140,7 @@ function update(self, elapsed)
   TimeSinceLastUpdate = TimeSinceLastUpdate + elapsed
   while (TimeSinceLastUpdate > 1) do
     updateAssists()
-    print(TimeEnded)
     if TimeEnded / InviteTimeout > 1 then
-      print("timeout reached")
       if not enabled then
         frame:SetScript("OnUpdate", nil)
       end
@@ -152,7 +193,7 @@ function shouldInvite(msg, sender)
   local realm = GetRealmName()
   local name = player.."-"..realm
   if names ~= sender and numInRaid >= max and saved.debug then
-    print("|cffFF0000Raid full.|r")
+    print("|cffFF4100[RaidInvites]|r |cffFFAF00Raid full.|r")
     return
   end
   if name ~= sender and containsKeyword(msg) then
@@ -366,13 +407,9 @@ function assistChecked()
   end
 end
 
-function enabledChecked(type)
+function enabledChecked()
   initialize()
-  if type == "click" then
-    enabled = not enabled
-  elseif type == "slash" then
-    enabled = true
-  end
+  enabled = not enabled
   if enabled then
     converter()
     Updates = 0
@@ -386,65 +423,54 @@ function focusEditbox()
   root:EnableKeyboard(true)
 end
 
-function isEscaped(msg, i)
-  if i > 2 and string.sub(msg, i - 1, i - 1) == "\\" then
-    return true
-  end
-end
-
-function getArguments(msg)
-  if string.sub(msg, 1, 1) ~= "\"" then
-    return "", ""
-  end
-  local keyword = ""
-  local gmsg = ""
-  local inQuote = false
-  local firstArg = false
-  for i = 1, #msg do
-    if string.sub(msg, i, i) == "\"" and not inQuote then
-      if firstArg then
-        if string.sub(msg, i - 1, i - 1) ~= " " then
-          return "", ""
-        end
-      end
-      inQuote = true
-    elseif string.sub(msg, i, i) == "\"" and inQuote and not isEscaped(msg, i) then
-      inQuote = false
-      if not firstArg then
-        if string.sub(msg, i + 1, i + 1) ~= " " then
-          return "", ""
-        end
-        firstArg = true
-      else
-        return keyword, gmsg
-      end
-    elseif inQuote then
-      if not firstArg then
-        if not (string.sub(msg, i, i) == "\\" and string.sub(msg, i + 1, i + 1) == "\"") then
-          keyword = keyword .. string.sub(msg, i, i)
-        end
-      else
-        if not (string.sub(msg, i, i) == "\\" and string.sub(msg, i + 1, i + 1) == "\"") then
-          gmsg = gmsg .. string.sub(msg, i, i)
-        end
-      end
-    end
-  end
-  return "", ""
-end
-
 function slashCommand(msg)
-  if (msg ~= "") then
-    saved.inviteKeyword, saved.spamMessage = getArguments(msg)
-    if saved.inviteKeyword == "" or saved.spamMessage == "" then
-      print("Incorrect arguments.")
-      return
+  if msg == "prof" or msg == "profs" or msg == "profile" or msg == "profiles" then
+    local names = ""
+    local i = 1
+    for name in pairs(profiles) do
+      if i == 1 then
+        names = names .. name
+      else
+        names = names .. ", " .. name
+      end
+      i = i + 1
     end
-    print("Invites enabled: " .. saved.inviteKeyword)
-    enabledChecked("slash")
+    print("|cffFF4100[RaidInvites]|r |cffFFAF00Profiles: " .. names .. "|r")
     return
   end
-  toggle()
+  if #msg > 10 then
+    print("|cffFF4100[RaidInvites]|r |cffFFAF00Profile name too long (>10 chars).|r")
+    return
+  end
+  if (msg ~= "") then
+    if hidden then
+      toggle()
+    end
+    if msg == "wb" or msg == "worldboss" then
+      profiles[profile] = deepcopy(saved)
+      saved = deepcopy(profiles["worldboss"])
+      profile = "worldboss"
+    else
+      if not profiles[msg] then
+        profiles[msg] = deepcopy(default)
+      end
+      profiles[profile] = deepcopy(saved)
+      saved = deepcopy(profiles[msg])
+      profile = msg
+    end
+    enabled = false
+  else
+    toggle()
+    saved = deepcopy(profiles[profile])
+  end
+  spamIntervalEditbox:SetText(saved.spamInterval or "")
+  spamMessageEditbox:SetText(saved.spamMessage)
+  inviteChannelsEditbox:SetText(saved.inviteChannels)
+  inviteKeywordEditbox:SetText(saved.inviteKeyword)
+  raidSizeEditbox:SetText(saved.raidSize)
+  caseSensitiveCheckbox:SetChecked(saved.caseSensitive)
+  assistCheckBox:SetChecked(saved.assist)
+  profileHeader:SetText("Profile: " .. profile)
   enabledCheckBox:SetChecked(enabled)
 end
 
