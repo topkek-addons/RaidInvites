@@ -13,7 +13,7 @@ local default = {
 
 local worldBossDefault = {
   spamInterval = "60",
-  spamMessage = "%boss has spawned! Send password for invite.",
+  spamMessage = "%boss has spawned! Send password for invite",
   inviteChannels = "guild, whisper",
   inviteKeyword = "cupcakes",
   raidSize = 40,
@@ -89,7 +89,11 @@ function worldBoss(message, boss)
   if hidden then
     toggle()
   end
-  enabled = true
+  spamIntervalEditbox:SetScript("OnTextChanged", nil)
+  spamMessageEditbox:SetScript("OnTextChanged", nil)
+  inviteChannelsEditbox:SetScript("OnTextChanged", nil)
+  inviteKeywordEditbox:SetScript("OnTextChanged", nil)
+  raidSizeEditbox:SetScript("OnTextChanged", nil)
   spamIntervalEditbox:SetText(saved.spamInterval or "")
   spamMessageEditbox:SetText(saved.spamMessage)
   inviteChannelsEditbox:SetText(saved.inviteChannels)
@@ -98,7 +102,9 @@ function worldBoss(message, boss)
   caseSensitiveCheckbox:SetChecked(saved.caseSensitive)
   assistCheckBox:SetChecked(saved.assist)
   profileHeader:SetText("Profile: " .. profile)
-  enabledCheckBox:SetChecked(enabled)
+  if not enabled then
+    enabledChecked()
+  end
 end
 
 function updateAssists()
@@ -120,7 +126,7 @@ function announce()
   end
   local spam = saved.spamMessage .. " - (" .. numInRaid .. "/" .. saved.raidSize .. ") in group"
   if profile == "worldboss" then
-    spam:gsub("%boss", bossName)
+    spam = spam:gsub("%%boss", bossName)
   end
   if IsInGroup() then
     if saved.raidSize > 5 then
@@ -421,6 +427,11 @@ end
 
 function focusEditbox()
   root:EnableKeyboard(true)
+  spamIntervalEditbox:SetScript("OnTextChanged", editboxChanged)
+  spamMessageEditbox:SetScript("OnTextChanged", editboxChanged)
+  inviteChannelsEditbox:SetScript("OnTextChanged", editboxChanged)
+  inviteKeywordEditbox:SetScript("OnTextChanged", editboxChanged)
+  raidSizeEditbox:SetScript("OnTextChanged", editboxChanged)
 end
 
 function slashCommand(msg)
