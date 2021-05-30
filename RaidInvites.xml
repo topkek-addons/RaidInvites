@@ -102,7 +102,7 @@
         </Layers>
       </Button>
       <EditBox name="$parentEditBox" letters="80" autoFocus="false">
-        <Size x="100" y="32" />
+        <Size x="160" y="32" />
         <Anchors>
           <Anchor point="BOTTOMLEFT">
             <Offset x="30" y="260" />
@@ -111,16 +111,16 @@
         <Layers>
           <Layer level="BACKGROUND">
             <Texture file="Interface\ChatFrame\UI-ChatInputBorder-Left">
-              <Size x="60" y="32" />
+              <Size x="90" y="32" />
               <Anchors>
                 <Anchor point="LEFT">
                   <Offset x="-10" y="0" />
                 </Anchor>
               </Anchors>
-              <TexCoords left="0" right="0.2" top="0" bottom="1.0"/>
+              <TexCoords left="0" right="0.3" top="0" bottom="1.0"/>
             </Texture>
             <Texture file="Interface\ChatFrame\UI-ChatInputBorder-Right">
-              <Size x="60" y="32" />
+              <Size x="90" y="32" />
               <Anchors>
                   <Anchor point="RIGHT">
                       <Offset x="10" y="0" />
@@ -150,7 +150,7 @@
         <FontString inherits="ChatFontNormal" />
       </EditBox>
       <EditBox name="$parentEditBox" letters="80" autoFocus="false">
-        <Size x="100" y="32" />
+        <Size x="160" y="32" />
         <Anchors>
           <Anchor point="BOTTOMLEFT">
             <Offset x="30" y="220" />
@@ -159,16 +159,16 @@
         <Layers>
           <Layer level="BACKGROUND">
             <Texture file="Interface\ChatFrame\UI-ChatInputBorder-Left">
-              <Size x="60" y="32" />
+              <Size x="90" y="32" />
               <Anchors>
                 <Anchor point="LEFT">
                   <Offset x="-10" y="0" />
                 </Anchor>
               </Anchors>
-              <TexCoords left="0" right="0.2" top="0" bottom="1.0"/>
+              <TexCoords left="0" right="0.3" top="0" bottom="1.0"/>
             </Texture>
             <Texture file="Interface\ChatFrame\UI-ChatInputBorder-Right">
-              <Size x="60" y="32" />
+              <Size x="90" y="32" />
               <Anchors>
                   <Anchor point="RIGHT">
                       <Offset x="10" y="0" />
@@ -198,7 +198,7 @@
         <FontString inherits="ChatFontNormal" />
       </EditBox>
       <EditBox name="$parentEditBox" letters="80" autoFocus="false">
-        <Size x="100" y="32" />
+        <Size x="160" y="32" />
         <Anchors>
           <Anchor point="BOTTOMLEFT">
             <Offset x="30" y="180" />
@@ -207,16 +207,16 @@
         <Layers>
           <Layer level="BACKGROUND">
             <Texture file="Interface\ChatFrame\UI-ChatInputBorder-Left">
-              <Size x="60" y="32" />
+              <Size x="90" y="32" />
               <Anchors>
                 <Anchor point="LEFT">
                   <Offset x="-10" y="0" />
                 </Anchor>
               </Anchors>
-              <TexCoords left="0" right="0.2" top="0" bottom="1.0"/>
+              <TexCoords left="0" right="0.3" top="0" bottom="1.0"/>
             </Texture>
             <Texture file="Interface\ChatFrame\UI-ChatInputBorder-Right">
-              <Size x="60" y="32" />
+              <Size x="90" y="32" />
               <Anchors>
                   <Anchor point="RIGHT">
                       <Offset x="10" y="0" />
@@ -246,7 +246,7 @@
         <FontString inherits="ChatFontNormal" />
       </EditBox>
       <EditBox name="$parentEditBox" letters="80" autoFocus="false">
-        <Size x="100" y="32" />
+        <Size x="160" y="32" />
         <Anchors>
           <Anchor point="BOTTOMLEFT">
             <Offset x="30" y="140" />
@@ -255,16 +255,16 @@
         <Layers>
           <Layer level="BACKGROUND">
             <Texture file="Interface\ChatFrame\UI-ChatInputBorder-Left">
-              <Size x="60" y="32" />
+              <Size x="90" y="32" />
               <Anchors>
                 <Anchor point="LEFT">
                   <Offset x="-10" y="0" />
                 </Anchor>
               </Anchors>
-              <TexCoords left="0" right="0.2" top="0" bottom="1.0"/>
+              <TexCoords left="0" right="0.3" top="0" bottom="1.0"/>
             </Texture>
             <Texture file="Interface\ChatFrame\UI-ChatInputBorder-Right">
-              <Size x="60" y="32" />
+              <Size x="90" y="32" />
               <Anchors>
                   <Anchor point="RIGHT">
                       <Offset x="10" y="0" />
@@ -294,7 +294,7 @@
         <FontString inherits="ChatFontNormal" />
       </EditBox>
       <EditBox name="$parentEditBox" letters="80" autoFocus="false">
-        <Size x="100" y="32" />
+        <Size x="160" y="32" />
         <Anchors>
           <Anchor point="BOTTOMLEFT">
             <Offset x="30" y="100" />
@@ -303,16 +303,16 @@
         <Layers>
           <Layer level="BACKGROUND">
             <Texture file="Interface\ChatFrame\UI-ChatInputBorder-Left">
-              <Size x="60" y="32" />
+              <Size x="90" y="32" />
               <Anchors>
                 <Anchor point="LEFT">
                   <Offset x="-10" y="0" />
                 </Anchor>
               </Anchors>
-              <TexCoords left="0" right="0.2" top="0" bottom="1.0"/>
+              <TexCoords left="0" right="0.3" top="0" bottom="1.0"/>
             </Texture>
             <Texture file="Interface\ChatFrame\UI-ChatInputBorder-Right">
-              <Size x="60" y="32" />
+              <Size x="90" y="32" />
               <Anchors>
                   <Anchor point="RIGHT">
                       <Offset x="10" y="0" />
