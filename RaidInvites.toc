@@ -1,5 +1,8 @@
 ## Interface: 11304
+## Author: topkek
 ## Title: RaidInvites
+## Version: 0.1.0
+## Notes: Lightweight raid invite tool
 ## X-Curse-Project-ID: 487889
 ## SavedVariables: saved, profile, profiles
 
