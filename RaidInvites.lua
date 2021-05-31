@@ -128,13 +128,6 @@ function announce()
   if profile == "worldboss" then
     spam = spam:gsub("%%boss", bossName)
   end
-  if IsInGroup() then
-    if saved.raidSize > 5 then
-      SendChatMessage(spam, "RAID")
-    else
-      SendChatMessage(spam, "PARTY")
-    end
-  end
   if IsInGuild() then
     SendChatMessage(spam, "GUILD")
   end
