@@ -42,7 +42,8 @@ profiles = profiles or { ["raid"] = deepcopy(saved), ["worldboss"] = deepcopy(wo
 local frame = CreateFrame("Frame")
 local hidden = true
 local enabled = false
-local TimeSinceLastUpdate = 0
+local throttle = 5
+local TimeSinceLastUpdate = throttle
 local UpdateInterval = 1
 local InviteTimeout = 60
 local TimeStarted = 0
@@ -129,7 +130,8 @@ function announce()
     spam = spam:gsub("%%boss", bossName)
   end
   if IsInGuild() then
-    SendChatMessage(spam, "GUILD")
+    print(spam)
+    -- SendChatMessage(spam, "GUILD")
   end
 end
 
@@ -137,7 +139,7 @@ function update(self, elapsed)
   TimeStarted = TimeStarted + elapsed
   TimeEnded = TimeEnded + elapsed
   TimeSinceLastUpdate = TimeSinceLastUpdate + elapsed
-  while (TimeSinceLastUpdate > 1) do
+  while (TimeSinceLastUpdate > throttle) do
     updateAssists()
     if TimeEnded / InviteTimeout > 1 then
       if not enabled then
@@ -412,6 +414,7 @@ function enabledChecked()
   if enabled then
     converter()
     Updates = 0
+    TimeSinceLastUpdate = throttle
     TimeStarted = tonumber(saved.spamInterval) or 0
     frame:SetScript("OnUpdate", update)
   end
