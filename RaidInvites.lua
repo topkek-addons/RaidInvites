@@ -130,8 +130,7 @@ function announce()
     spam = spam:gsub("%%boss", bossName)
   end
   if IsInGuild() then
-    print(spam)
-    -- SendChatMessage(spam, "GUILD")
+    SendChatMessage(spam, "GUILD")
   end
 end
 
